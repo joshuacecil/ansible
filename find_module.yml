@@ -1,0 +1,23 @@
+---
+- name: Playbook for find module 
+  hosts: pass the host
+  become: true #perform Escalation of user 
+  become_user: User #pass the name of user switched
+  gather_facts: false
+  tasks:
+   - name: testing find module
+     find:
+      paths: path of the file
+      patterns: '*.sql.gz'
+      file_type: file
+      age: -6h
+     register: file_state
+
+   - name: set Facts for resuability
+     set_fact:
+      item: "{{file_state.files[0].path | basename}}"
+      relative_file_path : "{{file_state.files[0].path}}"
+
+   - name: display_file
+     debug:
+      msg: "{{item,relative_file_path}}"  
